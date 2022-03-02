@@ -1,0 +1,8 @@
+default:
+  enter: |
+    mkdir -p $HOME/.shctx/default
+    export HISTFILE="$HOME/.shctx/default/history"
+    date
+    pwd
+  exit: |
+    echo bye bye!
