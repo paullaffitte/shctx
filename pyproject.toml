@@ -6,7 +6,7 @@ authors = ["Paul Laffitte <plaffitt@gmail.com>", "Baptiste Camus-Nicolo <3000aze
 license = "MIT"
 
 [tool.poetry.scripts]
-shctx = "shctx.main:_"
+shctx = "shctx.main:main"
 
 [tool.poetry.dependencies]
 python = "^3.7"

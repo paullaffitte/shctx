@@ -1,50 +1,25 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import pty
-import os
 import sys
 import yaml
 import argparse
+import shctx.cli as cli
 
-def start_context(context_name, context):
-  os.environ['SHCTX_ENTER'] = ''
-  os.environ['SHCTX_EXIT'] = ''
+def main():
+  if len(sys.argv) == 1:
+    print('Usage: shctx -h or --help')
+    sys.exit(1)
 
-  for parts in context:
-    os.environ['SHCTX_ENTER'] += parts.get('enter', '') + '\n'
-    os.environ['SHCTX_EXIT'] += parts.get('exit', '') + '\n'
+  with open('config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
 
-  os.environ['SHCTX_CONTEXT'] = context_name
-  pty.spawn(['./context.sh'])
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-l", "--list", action="store_true", help="context list")
+  parser.add_argument("-s", "--set", help="set context")
+  args = parser.parse_args()
 
-def get_context(context_name, config):
-  context = config[context_name]
-  used_contexts_names = context.get('use', [])
-  selected_contexts = []
-
-  for used_context_name in used_contexts_names:
-    selected_contexts.append(config[used_context_name])
-
-  context = config[context_name]
-  selected_contexts.append(context)
-
-  return selected_contexts
-
-if len(sys.argv) == 1:
-  print('Usage: shctx -h or --help')
-  sys.exit(1)
-
-with open('config.yaml', 'r') as file:
-  config = yaml.safe_load(file)
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-l", "--list", action="store_true", help="context list")
-parser.add_argument("-s", "--set", help="set context")
-args = parser.parse_args()
-
-if args.list:
-  pass
-
-if args.set:
-  pass
+  if args.list:
+    cli.list(config, args)
+  elif args.set:
+    cli.set(config, args)
