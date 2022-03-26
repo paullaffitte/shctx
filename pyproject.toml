@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "shctx"
+version = "0.1.0"
+description = "A context manager for your shell"
+authors = ["Paul Laffitte <plaffitt@gmail.com>", "Baptiste Camus-Nicolo <3000azer@gmail.com>"]
+license = "MIT"
+
+[tool.poetry.scripts]
+shctx = "shctx.main:_"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+PyYAML = "^6.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
