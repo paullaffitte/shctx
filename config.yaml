@@ -1,33 +1,32 @@
-# contexts
-
 default:
-  enter: |
+  enter: |-
     date
     pwd
-  exit: echo session finished
-
-work:
-  use:
-    - base-history
-    - base-bye
-  enter: |
-    date
-    pwd
-
-# bases
-
-base-history:
-  enter: |
     mkdir -p $HOME/.shctx/$SHCTX_CONTEXT
     export HISTFILE="$HOME/.shctx/$SHCTX_CONTEXT/history"
-
-    # update prompt for demo purpose
-    __prompt_command
-    OLD_PS1="$PS1"
-    __prompt_command() {
-      PS1="$OLD_PS1[$SHCTX_CONTEXT]> "
-    }
-
-base-bye:
-  exit:
-    echo bye bye!
+  exit: echo bye bye!
+qwer:
+  enter: |-
+    date
+    pwd
+    mkdir -p $HOME/.shctx/$SHCTX_CONTEXT
+    export HISTFILE="$HOME/.shctx/$SHCTX_CONTEXT/history"
+  exit: echo bye bye!
+rio:
+  enter: |-
+    date
+    cd $HOME/rio
+    pwd
+    la
+    mkdir -p $HOME/.shctx/$SHCTX_CONTEXT
+    export HISTFILE="$HOME/.shctx/$SHCTX_CONTEXT/history"
+  exit: echo bye bye!
+shctx:
+  enter: |-
+    date
+    cd $HOME/rio/shctx
+    pwd
+    la
+    mkdir -p $HOME/.shctx/$SHCTX_CONTEXT
+    export HISTFILE="$HOME/.shctx/$SHCTX_CONTEXT/history"
+  exit: echo bye bye!
