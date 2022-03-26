@@ -5,6 +5,7 @@ import pty
 import os
 import sys
 import yaml
+import argparse
 
 def start_context(context_name, context):
   os.environ['SHCTX_ENTER'] = ''
@@ -30,18 +31,20 @@ def get_context(context_name, config):
 
   return selected_contexts
 
-
 if len(sys.argv) == 1:
-  print('Usage: shctx <context>')
+  print('Usage: shctx -h or --help')
   sys.exit(1)
 
 with open('config.yaml', 'r') as file:
   config = yaml.safe_load(file)
 
-context_name = sys.argv[1]
-if not context_name in config:
-  print('No such context: ' + context_name)
-  sys.exit(1)
+parser = argparse.ArgumentParser()
+parser.add_argument("-l", "--list", action="store_true", help="context list")
+parser.add_argument("-s", "--set", help="set context")
+args = parser.parse_args()
 
-context = get_context(context_name, config)
-start_context(context_name, context)
+if args.list:
+  pass
+
+if args.set:
+  pass
