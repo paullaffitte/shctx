@@ -9,29 +9,32 @@ def start_context(context_name, context):
     next_context_file = os.environ['SHCTX_NEXT_CONTEXT_FILE']
     with open(next_context_file, 'w') as file:
       file.write(context_name)
-    os.kill(os.getppid(), signal.SIGKILL)
+    os.kill(os.getppid(), signal.SIGUSR1)
     return ''
 
-  os.environ['SHCTX_ENTER'] = ''
-  os.environ['SHCTX_EXIT'] = ''
-
-  for parts in context:
-    os.environ['SHCTX_ENTER'] += parts.get('enter', '') + '\n'
-    os.environ['SHCTX_EXIT'] += parts.get('exit', '') + '\n'
-
-  f = tempfile.NamedTemporaryFile()
+  next_context_file = tempfile.NamedTemporaryFile()
 
   os.environ['SHCTX_CONTEXT'] = context_name
-  os.environ['SHCTX_NEXT_CONTEXT_FILE'] = f.name
+  os.environ['SHCTX_NEXT_CONTEXT_FILE'] = next_context_file.name
+
+  os.environ['SHCTX_ENTER'] = ''
+  for parts in context:
+    os.environ['SHCTX_ENTER'] += parts.get('enter', '') + '\n'
 
   with open(make_path('last_context'), 'w') as file:
     file.write(context_name)
 
-  pty.spawn(['./context.sh'])
+  pty.spawn(['/bin/bash', '--rcfile', '.myrc'])
+
+  os.environ['SHCTX_EXIT'] = ''
+  for parts in context:
+    os.environ['SHCTX_EXIT'] += parts.get('exit', '') + '\n'
+
+  pty.spawn(['./context_exit.sh'])
 
   del os.environ['SHCTX_NEXT_CONTEXT_FILE']
-  next_context = f.read().decode('utf-8').strip()
-  f.close()
+  next_context = next_context_file.read().decode('utf-8').strip()
+  next_context_file.close()
 
   return next_context
 
@@ -49,10 +52,10 @@ def get_context(context_name, config):
   return selected_contexts
 
 def get_last_context():
-    try:
-      with open(make_path('last_context'), 'r') as file:
-        last_context = file.read().strip()
-    except FileNotFoundError:
-      return None
+  try:
+    with open(make_path('last_context'), 'r') as file:
+      last_context = file.read().strip()
+  except FileNotFoundError:
+    return None
 
-    return last_context
+  return last_context
