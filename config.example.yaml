@@ -1,18 +1,17 @@
 # contexts
 
-default:
+greetings:
   enter: |
-    date
-    pwd
-  exit: echo session finished
+    echo "Hello $USER! The current date is $(date) and you are in $(pwd)."
+  exit: echo "Session finished at $(date)"
 
 work:
   use:
     - base-history
     - base-bye
+    - greetings
   enter: |
-    date
-    pwd
+    echo "Warning, session history will be stored at $HISTFILE"
 
 # bases
 
@@ -20,13 +19,6 @@ base-history:
   enter: |
     mkdir -p $HOME/.shctx/$SHCTX_CONTEXT
     export HISTFILE="$HOME/.shctx/$SHCTX_CONTEXT/history"
-
-    # update prompt for demo purpose
-    __prompt_command
-    OLD_PS1="$PS1"
-    __prompt_command() {
-      PS1="$OLD_PS1[$SHCTX_CONTEXT]> "
-    }
 
 base-bye:
   exit:
