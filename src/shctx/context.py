@@ -2,6 +2,7 @@ import os
 import pty
 import signal
 import tempfile
+from shctx.config import make_path
 
 def start_context(context_name, context):
   if len(os.environ.get('SHCTX_NEXT_CONTEXT_FILE', '')) > 0:
@@ -23,6 +24,9 @@ def start_context(context_name, context):
   os.environ['SHCTX_CONTEXT'] = context_name
   os.environ['SHCTX_NEXT_CONTEXT_FILE'] = f.name
 
+  with open(make_path('last_context'), 'w') as file:
+    file.write(context_name)
+
   pty.spawn(['./context.sh'])
 
   del os.environ['SHCTX_NEXT_CONTEXT_FILE']
@@ -43,3 +47,12 @@ def get_context(context_name, config):
   selected_contexts.append(context)
 
   return selected_contexts
+
+def get_last_context():
+    try:
+      with open(make_path('last_context'), 'r') as file:
+        last_context = file.read().strip()
+    except FileNotFoundError:
+      return None
+
+    return last_context

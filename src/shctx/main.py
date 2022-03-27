@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from multiprocessing import context
 import sys
 import argparse
+import pathlib
 import shctx.cli as cli
-from shctx.config import get_config
+from shctx.config import get_config, user_directory
+from shctx.context import get_last_context
 
 def main():
-  if len(sys.argv) == 1:
-    print('Usage: shctx -h or --help')
-    sys.exit(1)
+  pathlib.Path(user_directory).mkdir(exist_ok=True)
 
   config = get_config()
 
@@ -18,7 +19,13 @@ def main():
   parser.add_argument("-s", "--set", help="set context")
   args = parser.parse_args()
 
-  if args.list:
+  if len(sys.argv) == 1:
+    args.set = get_last_context()
+    if args.set == None:
+      print('Usage: shctx -h or --help')
+      return
+    cli.set(config, args)
+  elif args.list:
     cli.list(config, args)
   elif args.set:
     cli.set(config, args)
