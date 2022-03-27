@@ -1,11 +1,20 @@
 import sys
-from shctx.context import get_context, start_context
+import shctx.config as cfg
+from shctx.context import get_last_context, get_context, start_context
 
-def list(config, args):
+def default(args):
+  args.context = get_last_context()
+  if args.context == None:
+    print('Usage: shctx -h or --help')
+    return
+  set(args)
+
+def list(args):
   pass
 
-def set(config, args):
-  context_name = args.set
+def set(args):
+  config = cfg.get_config()
+  context_name = args.context
 
   while context_name != '':
     if not context_name in config:
