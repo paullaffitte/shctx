@@ -10,9 +10,11 @@ def set(config, args):
     config = yaml.safe_load(file)
 
   context_name = args.set
-  if not context_name in config:
-    print('No such context: ' + context_name)
-    sys.exit(1)
 
-  context = get_context(context_name, config)
-  start_context(context_name, context)
+  while context_name != '':
+    if not context_name in config:
+      print('No such context: ' + context_name)
+      sys.exit(1)
+
+    context = get_context(context_name, config)
+    context_name = start_context(context_name, context)
