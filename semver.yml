@@ -1,0 +1,5 @@
+version: 0.1.0
+files:
+  pyproject.toml: version\s*=\s*"([0-9]+.[0-9]+.[0-9]+)"
+  src/shctx/__init__.py: __version__\s*=\s*'([0-9]+.[0-9]+.[0-9]+)'
+  tests/test_shctx.py: __version__\s*==\s*'([0-9]+.[0-9]+.[0-9]+)'

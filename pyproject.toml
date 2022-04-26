@@ -2,8 +2,15 @@
 name = "shctx"
 version = "0.1.0"
 description = "A context manager for your shell"
-authors = ["Paul Laffitte <plaffitt@gmail.com>", "Baptiste Camus-Nicolo <3000azer@gmail.com>"]
+authors = ["Paul Laffitte <plaffitt@gmail.com>"]
+keywords = ["shell", "context", "tool", "cli"]
+readme = "README.md"
 license = "MIT"
+homepage = "https://github.com/paullaffitte/shctx"
+repository = "https://github.com/paullaffitte/shctx"
+include = [
+    "LICENSE",
+]
 
 [tool.poetry.scripts]
 shctx = "shctx.main:main"

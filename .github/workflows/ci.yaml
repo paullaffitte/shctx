@@ -4,14 +4,21 @@ on:
     branches:
       - main
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
-      - run: npm install --global semantic-release @semantic-release/changelog @semantic-release/git
+      - run: npm install --global semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/exec
+      - run: wget --quiet https://github.com/paullaffitte/semver/releases/download/v0.3.0/semver
+      - run: chmod +x ./semver
       - name: Semantic Release
         run: npx semantic-release --ci
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish python poetry package
+        uses: JRubics/poetry-publish@v1.10
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          repository_name: shctx
