@@ -2,7 +2,7 @@ import os
 import pty
 import signal
 import tempfile
-from shctx.config import make_path
+from shctx.config import make_path, app_directory
 
 def start_context(context_name, context):
   if len(os.environ.get('SHCTX_NEXT_CONTEXT_FILE', '')) > 0:
@@ -24,13 +24,13 @@ def start_context(context_name, context):
   with open(make_path('last_context'), 'w') as file:
     file.write(context_name)
 
-  pty.spawn(['/bin/bash', '--rcfile', '.myrc'])
+  pty.spawn(['/bin/bash', '--rcfile', app_directory('.bashrc')])
 
   os.environ['SHCTX_EXIT'] = ''
   for parts in context:
     os.environ['SHCTX_EXIT'] += parts.get('exit', '') + '\n'
 
-  pty.spawn(['./context_exit.sh'])
+  pty.spawn([app_directory('context_exit.sh')])
 
   del os.environ['SHCTX_NEXT_CONTEXT_FILE']
   next_context = next_context_file.read().decode('utf-8').strip()

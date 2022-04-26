@@ -1,8 +1,12 @@
 import yaml
 from pathlib import Path
+import os
 
 def make_path(sub_path):
   return f'{user_directory}/{sub_path}'
+
+def app_directory(sub_path=''):
+  return os.path.dirname(os.path.abspath(__file__)) + '/' + sub_path
 
 def get_config():
   with open(config_file, 'r') as file:
