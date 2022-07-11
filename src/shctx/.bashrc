@@ -29,4 +29,4 @@ fi
 eval "$SHCTX_ENTER"
 unset SHCTX_ENTER
 
-trap 'history -a; kill -9 "$$"' SIGUSR1 # save history and kill itself
+trap 'history -a; exit' SIGUSR1 # save history and kill itself
