@@ -1,9 +1,15 @@
+import os
 import sys
 import shctx.config as cfg
 from shctx.context import get_last_context, get_context, start_context
 
+_is_login_shell = os.environ['SHLVL'] == '0'
+
 def default(args):
-  args.context = get_last_context()
+  if _is_login_shell:
+    args.context = cfg.default_context
+  else:
+    args.context = get_last_context()
   if args.context == None:
     print('Usage: shctx -h or --help')
     return

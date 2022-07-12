@@ -1,7 +1,7 @@
 import os
 import signal
 import tempfile
-from shctx.config import make_path, app_directory
+from shctx.config import make_path, app_directory, default_context
 
 def start_context(context_name, context):
   if len(os.environ.get('SHCTX_NEXT_CONTEXT_FILE', '')) > 0:
@@ -20,8 +20,9 @@ def start_context(context_name, context):
   for parts in context:
     os.environ['SHCTX_ENTER'] += parts.get('enter', '') + '\n'
 
-  with open(make_path('last_context'), 'w') as file:
-    file.write(context_name)
+  if context_name != default_context:
+    with open(make_path('last_context'), 'w') as file:
+      file.write(context_name)
 
   os.system(' '.join(['/bin/bash', '--rcfile', app_directory('.bashrc')]))
 

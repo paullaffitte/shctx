@@ -14,10 +14,11 @@ def get_config():
     if config == None:
       config = {}
 
-  config['_'] = { 'hidden': True }
+  config[default_context] = { 'hidden': True }
 
   return config
 
 home = Path.home()
 user_directory = f'{home}/.shctx'
 config_file = make_path('config.yaml')
+default_context = '_'
