@@ -19,6 +19,7 @@ def parse_args():
   # list command
   list_parser = sub_parsers.add_parser('list', aliases=['l'], help='list contexts')
   list_parser.set_defaults(func=cli.list)
+  list_parser.add_argument("-a", "--all", action="store_true", help="show all contexts including hidden ones")
 
   # set command
   set_parser = sub_parsers.add_parser('set', aliases=['s'], help='set current context')

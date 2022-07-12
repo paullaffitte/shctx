@@ -10,7 +10,14 @@ def default(args):
   set(args)
 
 def list(args):
-  pass
+  config = cfg.get_config()
+  contexts = []
+  for name, context in config.items():
+    if args.all or not 'hidden' in context or not context['hidden']:
+      contexts.append(name)
+
+  for context in contexts:
+    print(context)
 
 def set(args):
   config = cfg.get_config()

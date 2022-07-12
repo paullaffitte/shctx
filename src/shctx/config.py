@@ -14,7 +14,7 @@ def get_config():
     if config == None:
       config = {}
 
-  config['_'] = {}
+  config['_'] = { 'hidden': True }
 
   return config
 
