@@ -3,7 +3,7 @@ import sys
 import shctx.config as cfg
 from shctx.context import get_last_context, get_context, start_context
 
-_is_login_shell = os.environ['SHLVL'] == '0'
+_is_login_shell = os.environ.get('SHLVL', '0') == '0'
 
 def default(args):
   if _is_login_shell:

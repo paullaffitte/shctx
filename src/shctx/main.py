@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from multiprocessing import context
-import sys
 import argparse
 from pathlib import Path
-import shctx.cli as cli
-import shctx.config as cfg
 
 def parse_args():
+  import shctx.cli as cli
+
   parser = argparse.ArgumentParser()
   sub_parsers = parser.add_subparsers()
 
@@ -28,7 +26,9 @@ def parse_args():
 
   return parser.parse_args()
 
-def main():
+def start():
+  import shctx.config as cfg
+
   Path(cfg.user_directory).mkdir(exist_ok=True)
   Path(cfg.config_file).touch()
 
@@ -39,3 +39,18 @@ def main():
     print('Using config file: ' + cfg.config_file)
 
   args.func(args)
+
+def main():
+  try:
+    start()
+  except Exception:
+    # shctx MUST not crash and start a shell when used as a login-shell,
+    # otherwise the user cannot login anymore.
+    import traceback, os
+    print('could not start shctx')
+    print(traceback.format_exc())
+    print('falling-back to standard bash')
+    os.execl('/bin/bash', '/bin/bash')
+
+if __name__ == '__main__':
+  main()
