@@ -41,14 +41,8 @@ def start():
   args.func(args)
 
 def main():
-  import os
-  print('falling-back to standard bash')
-  os.environ['DESKTOP_MODE'] = '1'
-  os.execl('/bin/su', '/bin/su', '--login')
-  https://stackoverflow.com/questions/33961229/how-to-source-additional-file-when-launching-bash
-  https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
-  # os.execl('/bin/bash', '/bin/bash')
-  return
+  # https://stackoverflow.com/questions/33961229/how-to-source-additional-file-when-launching-bash
+  # https://shreevatsa.wordpress.com/2008/03/30/zshbash-startup-files-loading-order-bashrc-zshrc-etc/
   try:
     start()
   except Exception:
