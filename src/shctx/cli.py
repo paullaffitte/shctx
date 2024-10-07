@@ -1,38 +1,40 @@
 import os
 import sys
-import shctx.config as cfg
-from shctx.context import get_last_context, get_context, start_context
+import shctx
+import shctx.plugins as plugins
+import shctx.contexts as contexts
 
 _is_login_shell = os.environ.get('SHLVL', '0') == '0'
 
 def default(args):
   if _is_login_shell:
-    args.context = cfg.default_context
+    args.context = shctx.default_context
   else:
-    args.context = get_last_context()
+    args.context = contexts.get_last_used()
   if args.context == None:
     print('Usage: shctx -h or --help')
     return
   set(args)
 
 def list(args):
-  config = cfg.get_config()
-  contexts = []
-  for name, context in config.items():
-    if args.all or not 'hidden' in context or not context['hidden']:
-      contexts.append(name)
-
-  for context in contexts:
+  for context in contexts.list():
     print(context)
 
 def set(args):
-  config = cfg.get_config()
   context_name = args.context
+  contexts_list = contexts.list()
 
   while context_name != '':
-    if not context_name in config:
+    if not context_name in contexts_list:
       print('No such context: ' + context_name)
       sys.exit(1)
 
-    context = get_context(context_name, config)
-    context_name = start_context(context_name, context)
+    context = contexts.get(context_name)
+    context_name = contexts.start(context_name, context)
+
+def create(args):
+  if contexts.exists(args.context):
+    print('A context with this name already exists!')
+    sys.exit(1)
+
+  contexts.create(args.context, args.plugins)

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-from pathlib import Path
+import shctx.plugins as plugins
 
 def parse_args():
   import shctx.cli as cli
@@ -12,7 +12,6 @@ def parse_args():
 
   # flags
   parser.set_defaults(func=cli.default)
-  parser.add_argument("-c", "--config", help="use another configuration file than the default one")
 
   # list command
   list_parser = sub_parsers.add_parser('list', aliases=['l'], help='list contexts')
@@ -24,19 +23,20 @@ def parse_args():
   set_parser.set_defaults(func=cli.set)
   set_parser.add_argument('context', type=str, help='context to enter')
 
+  # create command
+  create_parser = sub_parsers.add_parser('create', aliases=['c'], help='create a new context')
+  create_parser.set_defaults(func=cli.create)
+  create_parser.add_argument('context', type=str, help='context to create')
+  create_parser.add_argument('plugins', nargs='*', help='plugins to use in this context')
+
   return parser.parse_args()
 
 def start():
-  import shctx.config as cfg
-
-  Path(cfg.user_directory).mkdir(exist_ok=True)
-  Path(cfg.config_file).touch()
+  import shctx
 
   args = parse_args()
 
-  if args.config:
-    cfg.config_file = args.config
-    print('Using config file: ' + cfg.config_file)
+  plugins.load()
 
   args.func(args)
 

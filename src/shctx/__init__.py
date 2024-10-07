@@ -1,13 +1,20 @@
 __version__ = '0.1.0'
 
-import yaml
+from pathlib import Path
+import os
 
-def str_presenter(dumper, data):
-  if len(data.splitlines()) > 1:  # check for multiline string
-    return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
-  return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+from xdg.BaseDirectory import xdg_config_home, xdg_state_home
 
-yaml.add_representer(str, str_presenter)
 
-# to use with safe_dump:
-yaml.representer.SafeRepresenter.add_representer(str, str_presenter)
+def app_directory(sub_path=''):
+  return os.path.dirname(os.path.abspath(__file__)) + '/' + sub_path
+
+
+config_dir = os.path.join(xdg_config_home, 'shctx')
+state_dir = os.path.join(xdg_state_home, 'shctx')
+
+plugins_dir = os.path.join(config_dir, 'plugins')
+contexts_dir = os.path.join(state_dir, 'contexts')
+last_context_path = os.path.join(state_dir, 'last_context')
+
+default_context = '_'
