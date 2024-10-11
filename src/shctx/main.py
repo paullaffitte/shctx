@@ -50,7 +50,7 @@ def main():
     print('could not start shctx')
     print(traceback.format_exc())
     print('falling-back to standard bash')
-    os.execl('/bin/bash', '/bin/bash')
+    # os.execl('/bin/bash', '/bin/bash')
 
 if __name__ == '__main__':
   main()
