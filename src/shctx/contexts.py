@@ -2,9 +2,14 @@ import shctx
 import os
 import signal
 import tempfile
-import shctx
+import shctx.plugins
 
 from pathlib import Path
+
+class Context:
+  def __init__(self, name, plugins=[]):
+    self.name = name
+    self.plugins = plugins
 
 def create(name, plugin_names):
   path = os.path.join(shctx.contexts_dir, name)
@@ -22,7 +27,13 @@ def get(name):
 
   with open(path, 'r') as file:
     context = file.read()
-    return context.split(',')
+    plugin_names = context.split(',')
+
+    plugins = []
+    for plugin_name in plugin_names:
+      plugins.append(shctx.plugins.get(plugin_name))
+
+    return Context(name, plugins)
 
 def get_last_used():
   try:
@@ -47,8 +58,8 @@ def start(name, context):
   os.environ['SHCTX_NEXT_CONTEXT_FILE'] = next_context_file.name
 
   os.environ['SHCTX_ENTER'] = ''
-  for plugins in context:
-    os.environ['SHCTX_ENTER'] += plugins.get('enter', '') + '\n'
+  for plugin in context.plugins:
+    os.environ['SHCTX_ENTER'] += plugin.getHook('enter') + '\n'
 
   if name != shctx.default_context:
     with open(shctx.last_context_path, 'w') as file:
@@ -57,8 +68,8 @@ def start(name, context):
   os.system(' '.join(['/bin/bash', '--rcfile', shctx.app_directory('.bashrc')]))
 
   os.environ['SHCTX_EXIT'] = ''
-  for plugins in context:
-    os.environ['SHCTX_EXIT'] += plugins.get('exit', '') + '\n'
+  for plugins in context.plugins:
+    os.environ['SHCTX_EXIT'] += plugins.getHook('exit') + '\n'
 
   os.system(' '.join([shctx.app_directory('context_exit.sh')]))
 
