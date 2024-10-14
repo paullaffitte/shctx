@@ -27,11 +27,7 @@ def get(name):
 
   with open(path, 'r') as file:
     context = file.read()
-    plugin_names = context.split(',')
-
-    plugins = []
-    for plugin_name in plugin_names:
-      plugins.append(shctx.plugins.get(plugin_name))
+    plugins = context.split(',')
 
     return Context(name, plugins)
 
@@ -43,6 +39,9 @@ def get_last_used():
     return None
 
   return last_context
+
+def get_hook(context, hook):
+  return '\n'.join([shctx.plugins.get_hook(plugin, hook) for plugin in context.plugins])
 
 def start(name, context):
   if len(os.environ.get('SHCTX_NEXT_CONTEXT_FILE', '')) > 0:
@@ -57,9 +56,7 @@ def start(name, context):
   os.environ['SHCTX_CONTEXT'] = name
   os.environ['SHCTX_NEXT_CONTEXT_FILE'] = next_context_file.name
 
-  os.environ['SHCTX_ENTER'] = ''
-  for plugin in context.plugins:
-    os.environ['SHCTX_ENTER'] += plugin.getHook('enter') + '\n'
+  os.environ['SHCTX_ENTER'] = get_hook(context, 'enter')
 
   if name != shctx.default_context:
     with open(shctx.last_context_path, 'w') as file:
@@ -67,9 +64,7 @@ def start(name, context):
 
   os.system(' '.join(['/bin/bash', '--rcfile', shctx.app_directory('.bashrc')]))
 
-  os.environ['SHCTX_EXIT'] = ''
-  for plugins in context.plugins:
-    os.environ['SHCTX_EXIT'] += plugins.getHook('exit') + '\n'
+  os.environ['SHCTX_EXIT'] = get_hook(context, 'exit')
 
   os.system(' '.join([shctx.app_directory('context_exit.sh')]))
 
@@ -80,8 +75,6 @@ def start(name, context):
   return next_context
 
 def list():
-  contexts = os.listdir(shctx.contexts_dir)
-
-  return contexts
+  return os.listdir(shctx.contexts_dir)
 
 Path(shctx.contexts_dir).mkdir(parents=True, exist_ok=True)

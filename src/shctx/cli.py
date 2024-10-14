@@ -17,8 +17,9 @@ def default(args):
   set(args)
 
 def list(args):
-  for context in contexts.list():
-    print(context)
+  for name in contexts.list():
+    context = contexts.get(name)
+    print(f'{name} {','.join(context.plugins)}')
 
 def set(args):
   context_name = args.context
